@@ -1,4 +1,4 @@
-# Hello world 띄워보기
+Hello world 띄워보기
 
 1. 가상환경을 실행
 
@@ -73,9 +73,9 @@
 
 
       - <프로젝트 이름>/settings.py를 열어준다.
-
+    
       - `hello.apps.HelloConfig`를 추가해준다.
-
+    
       ```python
       INSTALLED_APPS = [
           'hello.apps.HelloConfig',	//이 부분을 추가해준다.
@@ -85,7 +85,7 @@
           'django.contrib.staticfiles',
       ]
       ```
-
+    
       - hello폴더 안의 apps.py파일 안에는 HelloConfig라는 클래스가 정의되어있다.
 
    2. template만들기
@@ -93,9 +93,9 @@
 
 
       - app폴더 안에 template폴더를 생성해준다.
-
+    
       - template폴더 안에는 페이지에 보여줄 home.html파일을 생성해준다.
-
+    
       ```html
       <h1>
           Hello World!
@@ -113,7 +113,7 @@
           return render(request, 'home.html')
       
       ```
-
+    
       - 요청이 들어오면 `home.html`을 열어주라는 home이라는 함수를 정의해준다.
 
    4. urls.py를 통해 views와 요청을 연결해준다.
@@ -121,7 +121,7 @@
 
 
       - urls.py파일을 연 후 아래와 같이 `import hello.views`와 `path('', hello.views.home, name='home'),`를 추가해준다.
-
+    
       ```python
       from django.contrib import admin
       from django.urls import path
@@ -136,19 +136,24 @@
 
 
       - path의 인자 
-
+    
         - 첫번째는 route인데 쉽게 말해 도메인 뒤에 붙는 url이라 보면 된다.
-
+    
           - 예를 들어 `admin/`이면 `http://127.0.0.1:8000/admin/`을 의미한다.
-
+    
         - 두번째로는 views안에 정의된 함수이다.
-
+    
         - 세번째는 path의 이름을 `home`로 하겠다는 의미이다.
 
 5. 웹사이트에서 확인해보기
 
    - 웹브라우저에서 `http://127.0.0.1:8000/`으로 접속을 해보면 `hello.html`의 내용이 브라우저에 나타날 것이다.
 
+###MTV패턴
 
+- M(Model) : DB와 연동 테이블을 정의
+- T(Template) : 화면에 보여줄 모습을 정의
+- V(View) : 애플리케이션의 제어 흐름 및 처리 로직을 정의
+- MTV는 서로 독립적으로 구동해서 장고 전체를 구동시킨다.
 
 #END
