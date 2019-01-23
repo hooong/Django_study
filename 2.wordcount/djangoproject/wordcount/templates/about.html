@@ -1,0 +1,14 @@
+{% load static %}
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="{% static 'css/basic.css' %}">
+    </head>
+
+    <body>
+        <h1>About</h1>
+
+        <p>안녕하세요. 이곳은 글자를 세 주는 워드카운트 웹페이지입니다.</p>
+
+        <a href="{%url 'home'%}">Home으로 돌아가기</a>
+    </body>
+</html>
