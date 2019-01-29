@@ -95,4 +95,71 @@ def home(request):
 
 
 
+##Show구현하기(게시글 보여주기)
+
+>- `home.html`같은 경우에는 모든 Blog객체를 담아 보여준다.
+>- `detail.html`에서는 특정id의 객체를 담아서 보여준다.
+>- 127.0.0.1:8000/blog/x(객체번호) -> path Converter(url을 계층적으로 디자인)
+
+
+
+1. `home`에서 내용을 100글자 제한으로 두기
+
+   1. models.py에서 메서드추가해주기
+
+   ```python
+       def summary(self):
+           return self.body[:100]
+   ```
+
+   2. `home.html` 수정하기 -> {{blog.summary}}
+   3. 더보기로 누르면 `detail.html`로 가는 "...more"를 만들어준다.
+   4. `{% url 'detail' blog.id %}` 는 detail로 갈때 `blog.id` 값을 같이 넘겨준다.
+
+   ```html
+   {% for blog in blogs.all %}
+       <h1>제목 :  {{blog.title}} </h1>
+       <p>날짜 :  {{blog.pub_date}} </p>
+       <p>본문 미리보기 :  {{blog.summary}}<a href="{% url 'detail' blog.id %}">...more</a> </p>
+       <br><br>
+   {% endfor %}
+   ```
+
+
+
+2. `views.py`에 메서드 작성
+
+```python
+from django.shortcuts import render, get_object_or_404 #get_object_or_404를 import해준다.
+
+def detail(request, blog_id):			#여기선 request와 blog_id 두개의 인자를 받는다.
+    blog_detail = get_object_or_404(Blog, pk = blog_id)
+
+    return render(request, 'detail.html', {'blog':blog_detail})
+```
+
+- `get_object_or_404(어떤 클래스, 검색조건(몇번데이터,pk))` 
+  - 검색을 했는데 일치하는 데이터가 없다면 404에러를 띄어준다.
+- `pk = primary key`(객체들의 이름표, 구분자, 데이터의 대표값(대표값은 정하기 나름))
+
+3. `urls.py`에 url을 추가해준다.
+
+```python
+path('blog/<int:blog_id>', blog.views.detail, name="detail"),
+```
+
+- `<int:blog_id>`는 `blog_id`라는 인자를 int형(정수)으로 받아주겠다는 뜻이다.
+
+4. `detail.html` 작성하기.
+
+```html
+<h1>자세한 본문 내용</h1>
+<br><br>
+<h1> 제목 : {{blog.title}} </h1>
+<p> 작성 날짜 : {{blog.pub_date}} </p>
+<p> 자세한 본문 : {{blog.body}} </p>
+```
+
+
+
 # End

@@ -1,6 +1,6 @@
 {% for blog in blogs.all %}
-    <h1> {{blog.title}} </h1>
-    <p> {{blog.pub_date}} </p>
-    <p> {{blog.body}} </p>
+    <h1>제목 :  {{blog.title}} </h1>
+    <p>날짜 :  {{blog.pub_date}} </p>
+    <p>본문 미리보기 :  {{blog.summary}}<a href="{% url 'detail' blog.id %}">...more</a> </p>
     <br><br>
 {% endfor %}
