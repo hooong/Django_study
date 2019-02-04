@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'blog.apps.BlogConfig',
+    'portfolio.apps.PortfolioConfig',
 ]
 
 MIDDLEWARE = [
@@ -55,7 +56,7 @@ ROOT_URLCONF = 'myproject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['myproject/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -118,4 +119,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/static/' 
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'portfolio', 'static')   #static 파일들이 현재 어디에 있는지를 쓰는 곳.
+]   
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')  #static 파일들이 어디로 모일 것인지를 쓰는 곳.
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')    #medai폴더로 파일들을 모으겠다는 의미
+
+MEDIA_URL = '/media/'   #URL설정
