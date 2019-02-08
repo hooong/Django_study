@@ -15,22 +15,33 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="{%url 'index'%}">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item"> 
-                    <a class="nav-link" href="{%url 'new'%}">글쓰기</a>
+                    <a class="nav-link" href="{%url 'portfolio'%}">portfolio</a>
                 </li>
+                {% if user.is_authenticated %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Dropdown
+                    환영합니다. {{ user.username }}님!
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="{%url 'portfolio'%}">portfolio</a>
+                        <a class="dropdown-item" href="{%url 'new'%}">글쓰기</a>
+                        <a class="dropdown-item" href="javascript:{document.getElementById('logout').submit()}">로그아웃</a>
+                        <form id='logout' action="{%url 'logout'%}" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden">
+                        </form>
                     </div>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                {% else %}
+                <li class='nav-item'>
+                    <a class="nav-item nav-link" href="{%url 'signup'%}">회원가입</a>
                 </li>
+                <li>
+                        <a class="nav-item nav-link" href="{%url 'login'%}">로그인</a>
+                </li>
+                {% endif %}
             </ul>
             <form class="form-inline my-2 my-lg-0">
                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">

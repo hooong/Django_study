@@ -350,7 +350,32 @@
    ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
    ```
 
-   
+
+
+----
+
+# 계정관리
+
+> `accounts`라는 앱을 만들고 회원가입, 로그인, 로그아웃의 함수들을 작성. 
+
+
+
+csrf_token : csrf공격을 막아주기 위해 난수를 발생시켜준다. 이 난수를 이용해 암호화할 수 있다.
+
+------
+
+### http Method
+
+[][]
+
+|    상황     | Method |
+| :---------: | :----: |
+| 데이터 조회 |  GET   |
+| 데이터 생성 |  POST  |
+| 데이터 수정 |  PUT   |
+| 데이터 삭제 | DELETE |
+
+
 
 
 
