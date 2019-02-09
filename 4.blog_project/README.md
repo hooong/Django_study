@@ -3,11 +3,18 @@
 - bootstrap에서 `navbar`, `card title` 등등 적용
 
 - 글 내용 100글자만 뜨게 하고 `...more`버튼 추가
+
 - 글쓰기 페이지 추가
+
 - 포트폴리오 페이지 추가
+
 - static, media 파일 다루기
 
+- 계정관리 추가 (회원가입, 로그인, 로그아웃)
 
+  
+
+----
 
 ### 글쓰기 페이지 만들기
 
@@ -73,6 +80,8 @@
      - `	<form action="{%url 'create'%}">`  은 `form` 에서 입력받은 값을 `create` 함수에서 처리하겠다는 것.
 
 
+
+----
 
 ### 포트폴리오 페이지 만들기
 
@@ -232,6 +241,8 @@
 
 
 
+----
+
 ### 템플릿 상속
 
 >1. 프로젝트 폴더에 `templates` 폴더 생성
@@ -310,7 +321,9 @@
    {% endblock %}
    ```
 
-   
+
+
+----
 
 ### app별로 url관리하기
 
@@ -358,9 +371,142 @@
 
 > `accounts`라는 앱을 만들고 회원가입, 로그인, 로그아웃의 함수들을 작성. 
 
+1. `$ python3 manage.py startapp accounts`  - accounts앱을 만들어준다.
 
+2. `urls.py` 작성해준다
 
-csrf_token : csrf공격을 막아주기 위해 난수를 발생시켜준다. 이 난수를 이용해 암호화할 수 있다.
+   ```python
+   from django.urls import path
+   from . import views
+   
+   urlpatterns = [
+       path('signup/', views.signup, name='signup'),
+       path('login/', views.login, name='login'),
+       path('logout/', views.logout, name='logout'),
+   ]
+   ```
+
+3. `signup.html` 을 작성
+
+   ```html
+   {% extends 'base.html' %}
+   
+   {% block contents %}
+   <div class="container">
+       <h1>Sign Up!</h1>
+   
+       <form action="{%url 'signup' %}" method="POST">
+           {% csrf_token %}
+           Username:
+           <br>
+           <input type="text" name="username" value="">
+           <br>
+           Password:
+           <br>
+           <input type="password" name="password1" value="">
+           <br>
+           Confirm Password:
+           <br>
+           <input type="password" name="password2" value="">
+           <br>
+           <br>
+           <input type="submit" class="btn btn-primary" value="Sign Up!">
+       </form>
+   </div>
+   {% endblock %}
+   ```
+
+   - *csrf_token* : csrf공격을 막아주기 위해 난수를 발생시켜준다. 이 난수를 이용해 암호화할 수 있다.
+
+4. `login.html` 을 작성
+
+   ```html
+   {% extends 'base.html' %}
+   
+   {% block contents %}
+   <div class="container">
+       <h1>Login</h1>
+   
+       <form action="{%url 'login' %}" method="POST">
+           {% csrf_token %}
+           Username:
+           <br>
+           <input type="text" name="username" value="">
+           <br>
+           Password:
+           <br>
+           <input type="password" name="password1" value="">
+           <br>
+           <br>
+           <input type="submit" class="btn btn-primary" value="Sign Up!">
+       </form>
+   </div>
+   {% endblock %}
+   ```
+
+5. `views.py` 에 함수 작성
+
+   ```python
+   from django.shortcuts import render, redirect
+   from django.contrib.auth.models import User		#유저관리를 위해 import해주기
+   from django.contrib import auth					#유저관리를 위해 import해주기
+   
+   def signup(request):
+       if request.method == 'POST':
+           if request.POST['password1'] == request.POST['password2']:
+               user = User.objects.create_user(username=request.POST['username'], password=request.POST['password1'])  #db에 실제로 있는 회원명단이 있는지 확인해주는 메서드
+               auth.login(request, user)
+               return redirect('index')
+       return render(request, 'signup.html')
+   
+   def login(request):
+       if request.method == 'POST':
+           username = request.POST['username']
+           password = request.POST['password1']
+           user = auth.authenticate(request, username = username, password = password)
+           if user is not None:
+               auth.login(request, user)
+               return redirect('index')
+           else:
+               return render(request, 'login.html', {'error': 'username or password is incorrect.'})
+       else:
+           return render(request, 'login.html')
+   
+   def logout(request):
+       if request.method == 'POST':
+           auth.logout(request)
+           redirect('index')
+       return render(request, 'login.html')
+   ```
+
+6. `base.html` 에 회원가입, 로그인, 로그아웃 버튼 추가
+
+   ```html
+   {% if user.is_authenticated %}
+   <li class="nav-item dropdown">
+       <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+           환영합니다. {{ user.username }}님!
+       </a>
+       <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+           <a class="dropdown-item" href="{%url 'new'%}">글쓰기</a>
+           <a class="dropdown-item" href="javascript:{document.getElementById('logout').submit()}">로그아웃</a>
+           <form id='logout' action="{%url 'logout'%}" method="POST">
+               {% csrf_token %}
+               <input type="hidden">
+           </form>
+       </div>
+   </li>
+   {% else %}
+   <li class='nav-item'>
+       <a class="nav-item nav-link" href="{%url 'signup'%}">회원가입</a>
+   </li>
+   <li>
+       <a class="nav-item nav-link" href="{%url 'login'%}">로그인</a>
+   </li>
+   {% endif %}
+   ```
+
+   
 
 ------
 
