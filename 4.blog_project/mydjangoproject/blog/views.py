@@ -1,10 +1,22 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
+from django.core.paginator import Paginator
 from .models import Blog
 
 def index(request):
     blogs = Blog.objects
-    return render(request, 'index.html', {'blogs': blogs})
+
+    #블로그 모든 글들을 리스트에 담아준다.
+    blog_list = Blog.objects.all()
+    #게시글을 최신순으로 하기위해 역순으로 저장.
+    blog_list_reverse = blog_list[::-1]
+    #블로그 객체 세 개를 한 페이지로 자르기
+    paginator = Paginator(blog_list_reverse,3)
+    #request된 페이지가 뭔지 알아내기
+    page = request.GET.get('page')
+    #request된 페이지를 얻어오고 딕셔너리로 return 해주기
+    posts = paginator.get_page(page)
+    return render(request, 'index.html', {'blogs': blogs, 'posts':posts})
 
 def new(request): #new.html을 띄워주는 함수
     return render(request, 'new.html')

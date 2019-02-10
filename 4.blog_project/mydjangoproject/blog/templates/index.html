@@ -3,7 +3,7 @@
 {% block contents %}
 <body>
 <br>
-{% for blog in blogs.all %}
+{% for blog in posts %}
 <div class="container">
 <div class="card">
         <div class="card-body">
@@ -15,6 +15,23 @@
         </div><br>
     </div>
 {% endfor %}
+
+<div class='container'>
+    {#First Prev#}
+    {%if posts.has_previous%}
+    <a href="?page=1">First</a>
+    <a href="?page={{posts.previous_page_number}}">Prev</a>
+    {%endif%}
+    {# 3of4 #}
+    <span>{{posts.number}}</span>
+    <span>of</span>
+    <span>{{posts.paginator.num_pages}}</span>
+    {#Next Last#}
+    {%if posts.has_next%}
+    <a href="?page={{posts.next_page_number}}">Next</a>
+    <a href="?page={{posts.paginator.num_pages}}">Last</a>
+    {%endif%}
+</div>
 
 </body>
 {% endblock %}

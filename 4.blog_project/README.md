@@ -523,6 +523,91 @@
 
 
 
+----
+
+### Pagination
+
+> 게시글을 일정 개수만큼만 페이지별로 관리를 할 수 있게하는 것.
+
+- *paginator class* : 잘라진 식빵상태의 객체
+
+- *page class* : 잘라진 식빵 중 한 개의 식빵객체
+
+| 함수                        | 뜻                                      |
+| --------------------------- | --------------------------------------- |
+| page.count()                | 총 객체 수                              |
+| paginator.num_pages()       | 총 페이지 개수                          |
+| page.page(n)                | n번째 페이지 리턴                       |
+| page.page_range()           | (1부터 시작하는)페이지 리스트 반환      |
+| page.get_page(n)            | n번 페이지 갖고오기                     |
+| page.has_next()             | 다음 페이지가 있으면 True, 없으면 False |
+| page.has_previous()         | 이전 페이지가 있으면 True, 없으면 False |
+| page.previous_page_number() | 이전 페이지 번호 반환                   |
+
+1. `views.py` 수정하기
+
+   ```python
+   from django.core.paginator import Paginator	#paginator를 import하기
+   
+   def index(request):
+       blogs = Blog.objects
+       
+       #블로그 모든 글들을 리스트에 담아준다.
+       blog_list = Blog.objects.all()
+       #게시글을 최신순으로 하기위해 역순으로 저장.
+       blog_list_reverse = blog_list[::-1]
+       #블로그 객체 세 개를 한 페이지로 자르기
+       paginator = Paginator(blog_list_reverse,3)
+       #request된 페이지가 뭔지 알아내기
+       page = request.GET.get('page')
+       #request된 페이지를 얻어오고 딕셔너리로 return 해주기
+       posts = paginator.get_page(page)
+       return render(request, 'index.html', {'blogs': blogs, 'posts':posts})
+   ```
+
+   - 페이지 번호 알아내기
+
+     `page = request.GET.get('page')`
+
+     - request - 사용자가 요청하는 것에 대한 모든 정보를 담고 있는 객체
+
+     - GET - request안에서 GET방식을 불러오는 함수
+
+     - .get() - (딕셔너리 형에 대해서) key값을 인자로 주면 value값을 반환해주는 함수
+
+       > request.GET은 딕셔너리 자료형으로 들어온다.
+       >
+       > ex) URL -> www.google.com?thisIsAGetVarKey=3&thisIsAnotherOne=hello
+       >
+       > ​	request.GET -> {"thisIsAGetVarKey": 3, "thisIsAnotherOne": hello}
+
+2. `index.html` 수정하기
+
+   ```html
+   <div class='container'>
+       {#First Prev#}
+       {%if posts.has_previous%}
+       <a href="?page=1">First</a>
+       <a href="?page={{posts.previous_page_number}}">Prev</a>
+       {%endif%}
+       
+       {# 3of4 #}
+       <span>{{posts.number}}</span>
+       <span>of</span>
+       <span>{{posts.paginator.num_pages}}</span>
+       
+       {#Next Last#}
+       {%if posts.has_next%}
+       <a href="?page={{posts.next_page_number}}">Next</a>
+       <a href="?page={{posts.paginator.num_pages}}">Last</a>
+       {%endif%}
+   </div>
+   ```
+
+
+
+----
+
 
 
 # END
