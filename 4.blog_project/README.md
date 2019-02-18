@@ -610,5 +610,84 @@
 
 
 
-# END
+### Form
 
+> 자동으로 html `form`형식을 만들어준다.
+>
+> 또한 함수를 사용해 입력되는 값을 검증해준다.
+
+
+
+1. `blog app` 폴더에 `form.py` 파일 생성
+
+   - 만들어져 있는 모델을 이용해서 입력공간 만들기
+
+     ```python
+     from django import forms
+     from .models import Blog	#같은 blog app에 있는 models.py에서 Blog 모델을 import
+     
+     class BlogPost(forms.ModelForm):	#모델을 이용하려면 .ModelForm 사용.
+          class Meta:					#meta class는 쉽게 말해 클래스 안의 클래스
+              model = Blog				#기반으로 할 모델을 입력해준다.
+              fields = ['title', 'body']	#입력받을 필드를 입력해준다.
+     ```
+
+   - 임의의 입력공간 만들기
+
+     ```python
+     from django import forms
+     from .models import Blog
+     
+     class BlogPost(forms.Form):		#모델을 이용하는 것과 다르게 .Form을 사용.
+         email = forms.EmailField()
+         files = forms.FileField()
+         url = forms.URLField()
+         words = forms.CharField(max_length=200)
+         max_number = forms.ChoiceField(choices=[('1','one'),('2','two'),('3','three')])
+     ```
+
+2. `newblog.html` 을 생성하고 `url` 설정
+
+   ```html
+   {% extends 'base.html' %}
+   
+   {% block contents %}
+   <br>
+   <div class="container">
+       <form method="POST">
+           {% csrf_token %}
+           <table>
+               {{form.as_table}}		<!-- table로 만들어준다(as_p, as_ul등도 있다) -->
+           </table>
+           <br>
+           <input class="btn btn-dark" type="submit" value="제출하기">
+       </form>
+   </div>
+   {% endblock %}
+   ```
+
+3. `views.py`에 함수 정의해주기
+
+   ```python
+   from .form import BlogPost			#form.py에서 BlogPost객체를 import
+   from django.utils import timezone	#pub_date에서 현재시간을 저장하기위해 import
+   
+   
+   def blogpost(request):
+       # 1. 입력된 내용을 처리하는 기능 -> POST
+       if request.method == 'POST':
+           form = BlogPost(request.POST)
+           if form.is_valid(): #예외처리를 해주는 함수(이메일 형식에 맞지않다거나 입력을 하지 않았다거나...)
+               post = form.save(commit=False) #저장하지 않고 모델객체를 불러온다.
+               post.pub_date = timezone.now()
+               post.save()
+               return redirect('index')
+       # 2. 빈페이지를 띄워주는 기능 -> GET
+       else:
+           form = BlogPost()
+           return render(request, 'newblog.html', {'form':form})
+   ```
+
+   
+
+# END
