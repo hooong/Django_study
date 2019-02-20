@@ -20,10 +20,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '6nu$7bp&3f^hsy^f%=j58s6kl!9=m)_cn^4rsays6^n)7oedl5'
+# SECRET_KEY = '6nu$7bp&3f^hsy^f%=j58s6kl!9=m)_cn^4rsays6^n)7oedl5'
+import os
+SECRET_KEY = os.environ.get('DJANO_SECRET_KEY','6nu$7bp&3f^hsy^f%=j58s6kl!9=m)_cn^4rsays6^n)7oedl5')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
+DEBUG = bool(os.environ.get('DJANGO_DEBUG', True))
 
 ALLOWED_HOSTS = []
 
@@ -43,6 +46,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -131,3 +135,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')  #static 파일들이 어디로 �
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')    #medai폴더로 파일들을 모으겠다는 의미
 
 MEDIA_URL = '/media/'   #URL설정
+
+#Heroku
+import dj_database_url
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
