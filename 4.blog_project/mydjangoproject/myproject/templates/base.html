@@ -17,7 +17,7 @@
                 {% if user.is_authenticated %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    환영합니다. {{ user.username }}님!
+                    환영합니다.  {{ user.username }}님!
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="{%url 'newblog'%}">글쓰기</a>
