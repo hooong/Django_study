@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     # provider 구글,페이스북,카톡,깃헙
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
+
+    'imagekit',
 ]
 
 MIDDLEWARE = [
@@ -129,6 +131,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'login', 'static')
+]   
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # 소셜로그인을 위함
 AUTHENTICATION_BACKENDS = (

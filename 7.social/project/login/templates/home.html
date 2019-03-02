@@ -1,0 +1,47 @@
+{% load static %}
+{% load socialaccount %}
+{% providers_media_js %}        <!--provider에서 제공하는 로그인페이지의 템플릿을 사용할 수 있다.-->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+        <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=<Client ID>"></script>
+    </head>
+
+    <body>
+        <h1>hello world!</h1>
+
+        <a href="/accounts/signup">회원가입</a>
+        
+        {% if user.is_authenticated %}
+        <a href="/accounts/logout">로그아웃</a>
+        {{user.username}} 님이 로그인 중
+        {% else %}
+        <a href=" {% provider_login_url 'google' %}">구글 로그인</a>
+        <a href=" {% provider_login_url 'facebook' %}">구글 로그인</a>
+        로그인 해야됨
+        {% endif %}
+
+        <br><br>
+
+        {% for blog in blog.all %}
+
+        <img src="{{blog.image.url}}" width=500>
+        <br>
+        {{blog.text}}
+        <br><br>
+        <img src="{{blog.image_thumbnail.url}}">
+        {% endfor %}
+
+        <br><br>
+        <div id="map" style="width:50%;height:400px;"></div>        <!--지도를 띄워주는 코드-->
+
+        <script type="text/javascript" src="{% static 'js/basic.js' %}"></script>
+    </body>
+</html>
+
+
+
