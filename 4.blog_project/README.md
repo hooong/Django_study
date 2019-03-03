@@ -18,6 +18,8 @@
 
 - 장고의 form 사용
 
+- db 바꿔보기
+
   
 
 ----
@@ -694,6 +696,38 @@
            return render(request, 'newblog.html', {'form':form})
    ```
 
-   
+
+
+
+## PostgreSQL 사용하기
+
+1. https://www.enterprisedb.com/downloads/postgres-postgresql-downloads 다음 링크로 가서 postgresql을 다운로드하고 설치하기.
+
+   - 설치도중 비밀번호를 잘 기억하고 포트번호는 5432로 해준다.
+
+2. pg4admin으로 가서 서버를 켜준다.
+
+3. 새로운 db를 만들어준다. 여기서는 `blog`로 만들어주었다.
+
+4. `settings.py`에서 DATABASES부분을 수정해준다.
+
+   ```python
+   DATABASES = {
+       'default': {
+           'ENGINE': 'django.db.backends.postgresql',
+           'NAME': 'blog',				#자신이 등록한 db이름
+           'USER': 'postgres',			#유저이름
+           'PASSWORD': 'password',		#자신이 등록한 비밀번호입력
+           'HOST': '127.0.0.1',
+           'PORT': '5432',
+       }
+   }
+   ```
+
+5. `$ python manage.py migrate` 를 해준다.
+
+6. admin계정도 다시 만들어주어야 admin페이지를 들어갈 수 있다.
+
+
 
 # END
