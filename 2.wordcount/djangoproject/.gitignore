@@ -117,3 +117,8 @@ venv.bak/
 
 # mkdocs documentation
 /site
+
+### ElasticBeanstalk ###
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

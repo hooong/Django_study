@@ -1,7 +1,8 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, HttpResponseRedirect
 from django.utils import timezone
 from django.core.paginator import Paginator
-from .models import Blog
+from django.contrib import messages
+from .models import Blog, Comment
 from .form import BlogPost
 
 def index(request):
@@ -50,3 +51,16 @@ def blogpost(request):
     else:
         form = BlogPost()
         return render(request, 'newblog.html', {'form':form})
+
+#댓글작성
+def comment_write(request, blog_pk):
+    if request.method == 'POST':
+        post = get_object_or_404(Blog, pk=blog_pk)
+        content = request.POST.get('content')
+
+        if not content:
+            messages.info(request, "You don't write anything...")
+            return redirect('/blog/'+str(blog_pk))
+
+        Comment.objects.create(post=post, comment_contents=content)
+        return redirect('/blog/'+str(blog_pk))

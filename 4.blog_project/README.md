@@ -20,6 +20,8 @@
 
 - db 바꿔보기
 
+- 댓글기능 추가!
+
   
 
 ----
@@ -727,6 +729,85 @@
 5. `$ python manage.py migrate` 를 해준다.
 
 6. admin계정도 다시 만들어주어야 admin페이지를 들어갈 수 있다.
+
+
+
+----
+
+
+
+# 댓글 기능
+
+1. `models.py`에 `comment`모델을 추가해주기
+
+   ```python
+   class Comment(models.Model):
+       post = models.ForeignKey(Blog, on_delete=models.CASCADE, null=True, related_name='comments')
+       comment_date = models.DateTimeField(auto_now_add=True)
+       comment_contents = models.CharField(max_length=200)
+   
+       class Meta:
+           ordering=['-id']			#???
+   
+       def __str__(self):
+           return self.comment_contents
+   ```
+
+2. `detail.html` 에서 댓글을 출력해주는 코드를 추가해준다.
+
+   ```html
+   <hr>
+   {% for comment in blog.comments.all %}
+   <div class="comment">
+       <div class="date">{{ comment.comment_date }}</div>
+       <p>{{ comment.comment_contents }}</p>
+   </div>
+   {% empty %}
+   <p>No comment here yet</p>
+   {% endfor %}
+   ```
+
+3. 댓글 작성을 위한 view를 정의해준다.
+
+   ```python
+   from django.contrib import messages
+   from .models import Blog, Comment
+   
+   def comment_write(request, blog_pk):
+       if request.method == 'POST':
+           post = get_object_or_404(Blog, pk=blog_pk)
+           content = request.POST.get('content')
+   
+           if not content:
+               messages.info(request, "You don't write anything...")
+               return redirect('/blog/'+str(blog_pk))
+   
+           Comment.objects.create(post=post, comment_contents=content)
+           return redirect('/blog/'+str(blog_pk))
+   ```
+
+4. `urls.py`에서 라우팅을 해준다.
+
+   ```python
+   path('<int:blog_pk>/comment_new', views.comment_write, name="comment_write")
+   ```
+
+5. `detail.html`에서 댓글 작성을 할 수 있게 form을 만들어준다.
+
+   ```html
+   <hr>
+   <form action="{% url 'comment_write' blog_pk=blog.pk %}" method = "POST">
+       {% csrf_token %}
+       <input type="text" name="content" placeholder="Write your comments">
+       <input type="submit" value="Write" />
+   </form>
+   ```
+
+6. 모델을 새로 작성해주었으므로 migration을 만들고 migrate를 해주어야한다.
+
+   `$ python manage.py makemigrations`
+
+   `$ python manage.py migrate`
 
 
 
