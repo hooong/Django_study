@@ -22,6 +22,8 @@
 
 - 댓글기능 추가!
 
+- 조회수 기능
+
   
 
 ----
@@ -808,6 +810,61 @@
    `$ python manage.py makemigrations`
 
    `$ python manage.py migrate`
+
+
+
+# 조회수 띄우기
+
+1. `Blog`모델에 `blog_hit` 와 `update_counter` 를 정의해준다.
+
+   ```python
+   class Blog(models.Model):
+       title = models.CharField(max_length=200)
+       pub_date = models.DateTimeField('date published')
+       body = models.TextField()
+       blog_hit = models.PositiveIntegerField(default = 0)
+   
+       def __str__(self):
+           return self.title
+   
+       def summary(self):
+           return self.body[:100]
+   
+       def update_counter(self):		#이 함수가 실행될때마다 blog_hit이 1씩 증가
+           self.blog_hit = self.blog_hit + 1
+           self.save()
+   ```
+
+2. 글에 들어왔을때 증가가 되어야 하므로 해당글의 `detail` 에 들어갔을때 `update_counter` 함수를 실행시킨다.
+
+   `detail.html` 아무 곳에나 `{{blog.update_counter}}` 를 추가해준다.
+
+   ```html
+   <h1> 자세한 내용을 알려주는 페이지입니다.</h1>
+       <br><br>
+       <h1>{{ blog.title }}</h1>
+       <p>{{ blog.pub_date }}</p>
+       <p>{{ blog.body }}{{blog.update_counter}}</p>
+   ```
+
+3. `index.html`에서 조회수를 띄워보자
+
+   ```html
+   {% for blog in posts %}
+   <div class="container">
+   <div class="card">
+           <div class="card-body">
+               <h2 class="card-title">{{blog.title}} ({{blog.blog_hit}})</h2>
+               <h6 class="card-subtitle mb-2 text-muted">{{blog.pub_date}}</h6>
+               <p class="card-text">{{blog.summary}}</p>
+           <a href="{%url 'detail' blog.id%}" class="card-link">...more</a>
+           </div>
+           </div><br>
+       </div>
+   {% endfor %}
+   ```
+
+   
 
 
 

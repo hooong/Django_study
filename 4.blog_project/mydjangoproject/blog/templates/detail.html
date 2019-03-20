@@ -7,14 +7,14 @@
     <br><br>
     <h1>{{ blog.title }}</h1>
     <p>{{ blog.pub_date }}</p>
-    <p>{{ blog.body }}</p>
+    <p>{{ blog.body }}{{blog.update_counter}}</p>
     <br>
     <hr>
-        <form action="{% url 'comment_write' blog_pk=blog.pk %}" method = "POST">
-            {% csrf_token %}
-            <input type="text" name="content" placeholder="Write your comments">
-            <input type="submit" value="Write" />
-        </form>
+    <form action="{% url 'comment_write' blog_pk=blog.pk %}" method = "POST">
+        {% csrf_token %}
+        <input type="text" name="content" placeholder="Write your comments">
+        <input type="submit" value="Write" />
+    </form>
     <hr>
     {% for comment in blog.comments.all %}
         <div class="comment">
