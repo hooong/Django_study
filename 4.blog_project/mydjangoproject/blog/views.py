@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponseRedirect
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.contrib import messages
 from .models import Blog, Comment
@@ -64,3 +65,14 @@ def comment_write(request, blog_pk):
 
         Comment.objects.create(post=post, comment_contents=content)
         return redirect('/blog/'+str(blog_pk))
+
+#좋아요
+# @login_required
+# def post_like(request, pk):
+#     post =  get_object_or_404(Blog, pk=pk)
+#     post_like, post_like_created = post.like_user_set.get_or_create(user=request.user)
+
+#     if not post_like_created:
+#         post_like.delete()
+
+#         return redirect('post_list/'+str(pk))

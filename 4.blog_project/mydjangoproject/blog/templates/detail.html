@@ -9,6 +9,7 @@
     <p>{{ blog.pub_date }}</p>
     <p>{{ blog.body }}{{blog.update_counter}}</p>
     <br>
+    
     <hr>
     <form action="{% url 'comment_write' blog_pk=blog.pk %}" method = "POST">
         {% csrf_token %}
